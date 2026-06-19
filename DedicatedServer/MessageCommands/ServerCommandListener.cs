@@ -208,12 +208,12 @@ namespace DedicatedServer.MessageCommands
 
         public static void Enable()
         {
-            MainController.chatBox.ChatReceived += chatReceived;
+            MainController.chatBox.ChatReceived += ChatReceived;
         }
 
         public static void Disable()
         {
-            MainController.chatBox.ChatReceived -= chatReceived;
+            MainController.chatBox.ChatReceived -= ChatReceived;
         }
 
         #region DEBUG_SKIP_DAYS
@@ -256,7 +256,7 @@ namespace DedicatedServer.MessageCommands
         #endif
         #endregion
 
-        private static void chatReceived(object sender, ChatEventArgs e)
+        private static void ChatReceived(object sender, ChatEventArgs e)
         {
             var tokens = e.Message.Split(' ');
 
