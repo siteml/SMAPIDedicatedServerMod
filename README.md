@@ -3,7 +3,7 @@
 <div align="center">
 
   [![Shields](https://img.shields.io/badge/Stardew_Valley-1.6.15-153C86)](https://www.stardewvalley.net/ "Link to Stardew Valley")
-  [![Shields](https://img.shields.io/badge/SMAPI-4.3.2-5cb811)](https://smapi.io/ "Link to SMAPI")
+  [![Shields](https://img.shields.io/badge/SMAPI-4.5.2-5cb811)](https://smapi.io/ "Link to SMAPI")
    ![Shields](https://img.shields.io/badge/.NET-6.0-512BD4)
   [![Shields](https://img.shields.io/badge/forked_from-_-blue)](https://github.com/ObjectManagerManager/SMAPIDedicatedServerMod "Link to the Original Repository")
 <!-- [![Shields](https://img.shields.io/badge/Docker_Version-_-2496ED)](https://github.com/Chris82111/StardewValleyViaDocker "Link to StardewValleyViaDocker ") -->

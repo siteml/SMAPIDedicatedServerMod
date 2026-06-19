@@ -1,10 +1,10 @@
 {
   "Name": "DedicatedServer",
   "Author": "Chris82111",
-  "Version": "1.2.2",
-  "Description": "Description",
+  "Version": "1.2.3",
+  "Description": "Dedicated (headless) server mod for Stardew Valley, powered by SMAPI. Turns the host into an automated bot. ",
   "UniqueID": "com.chris82111.dedicatedserver",
   "EntryDll": "DedicatedServer.dll",
-  "MinimumApiVersion": "4.3.2",
+  "MinimumApiVersion": "4.5.2",
   "UpdateKeys": []
 }
