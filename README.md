@@ -26,7 +26,7 @@ Upon running SMAPI with the mod installed for the first time, a `config.json` fi
 - `CabinLayout`: Specifies the starting cabin layout. Options are "nearby" or "separate".
 - `ProfitMargin`: The farm's profit margin. Options are "normal", "75%", "50%", and "25%".
 - `MoneyStyle`: Determines whether money is shared or separate among farmers. Options are "shared" or "separate".
-- `FarmType`: The type of farm. Options include "standard", "riverland", "forest", "hilltop", "wilderness", "fourcorners", and "beach".
+- `FarmType`: The type of farm. Options include "standard", "riverland", "forest", "hilltop", "wilderness", "fourcorners", "beach", and "meadowlands".
 - `CommunityCenterBundles`: The community center bundle type. Options are "normal" or "remixed".
 - `GuaranteeYear1Completable`: Set to `true` or `false` to determine if the community center should be guaranteed completable during the first year.
 - `MineRewards`: The mine rewards type. Options are "normal" or "remixed".
