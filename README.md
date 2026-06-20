@@ -3,7 +3,7 @@
 <div align="center">
 
   [![Shields](https://img.shields.io/badge/Stardew_Valley-1.6.15-153C86)](https://www.stardewvalley.net/ "Link to Stardew Valley")
-  [![Shields](https://img.shields.io/badge/SMAPI-4.3.2-5cb811)](https://smapi.io/ "Link to SMAPI")
+  [![Shields](https://img.shields.io/badge/SMAPI-4.5.2-5cb811)](https://smapi.io/ "Link to SMAPI")
    ![Shields](https://img.shields.io/badge/.NET-6.0-512BD4)
   [![Shields](https://img.shields.io/badge/forked_from-_-blue)](https://github.com/ObjectManagerManager/SMAPIDedicatedServerMod "Link to the Original Repository")
 <!-- [![Shields](https://img.shields.io/badge/Docker_Version-_-2496ED)](https://github.com/Chris82111/StardewValleyViaDocker "Link to StardewValleyViaDocker ") -->
@@ -26,7 +26,7 @@ Upon running SMAPI with the mod installed for the first time, a `config.json` fi
 - `CabinLayout`: Specifies the starting cabin layout. Options are "nearby" or "separate".
 - `ProfitMargin`: The farm's profit margin. Options are "normal", "75%", "50%", and "25%".
 - `MoneyStyle`: Determines whether money is shared or separate among farmers. Options are "shared" or "separate".
-- `FarmType`: The type of farm. Options include "standard", "riverland", "forest", "hilltop", "wilderness", "fourcorners", and "beach".
+- `FarmType`: The type of farm. Options include "standard", "riverland", "forest", "hilltop", "wilderness", "fourcorners", "beach", and "meadowlands".
 - `CommunityCenterBundles`: The community center bundle type. Options are "normal" or "remixed".
 - `GuaranteeYear1Completable`: Set to `true` or `false` to determine if the community center should be guaranteed completable during the first year.
 - `MineRewards`: The mine rewards type. Options are "normal" or "remixed".

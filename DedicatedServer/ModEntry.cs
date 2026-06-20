@@ -9,9 +9,6 @@ namespace DedicatedServer
     /// <summary>The mod entry point.</summary>
     public class ModEntry : Mod
     {
-        // TODO: Add more config options, like the ability to disable the crop saver
-        //       (perhaps still keep track of crops in case it's enabled later, but don't alter them).
-
         // TODO: Make the host icon on the map invisible to everyone else
 
         // TODO: See the warnings
