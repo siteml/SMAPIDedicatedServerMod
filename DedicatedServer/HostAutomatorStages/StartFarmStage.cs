@@ -9,6 +9,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DedicatedServer.HostAutomatorStages
 {
@@ -23,6 +24,8 @@ namespace DedicatedServer.HostAutomatorStages
         private ReadyCheckHelper readyCheckHelper = null;
         private InvincibleWorker invincibleWorker = null;
         private PasswordValidation passwordValidation = null;
+
+        private const string MeadowlandsFarmId = "MeadowlandsFarm";
 
         public StartFarmStage(IModHelper helper, IMonitor monitor, ModConfig config)
         {
@@ -231,6 +234,7 @@ namespace DedicatedServer.HostAutomatorStages
                 LogConfigError("Farm type must be one of \"standard\", \"riverland\", \"forest\", \"hilltop\", \"wilderness\", \"fourcorners\", \"beach\", or \"meadowlands\"");
                 Exit(-1);
             }
+
             if (config.FarmType == "standard")
             {
                 Game1.whichFarm = 0;
@@ -261,14 +265,20 @@ namespace DedicatedServer.HostAutomatorStages
             }
             else if (config.FarmType == "meadowlands")
             {
-                // Farm type 7 is mod
-                // https://github.com/Pathoschild/SMAPI/issues/957
-                // ModFarmType modFarmType = Game1.whichModFarm;
-                // modFarmType.Id = "MeadowlandsFarm";
-                // Game1.whichFarm = 7;
+                // Farm type 7 is for mods
+                Game1.whichFarm = 7;
 
-                LogConfigError("The meadowlands farm is currently not supported:\nhttps://github.com/Pathoschild/SMAPI/issues/957");
-                Exit(-1);
+                var additionalFarms = DataLoader.AdditionalFarms(Game1.content);
+
+                var modFarm = additionalFarms?.FirstOrDefault(f => f.Id == MeadowlandsFarmId);
+
+                if (null == modFarm)
+                {
+                    LogConfigError($"There were problems loading the 'meadowlands' farm.");
+                    Exit(-1);
+                }
+
+                Game1.whichModFarm = modFarm;
             }
 
             // Community center bundles type
