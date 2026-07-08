@@ -3,6 +3,7 @@ using DedicatedServer.Config;
 using DedicatedServer.Crops;
 using DedicatedServer.HostAutomatorStages.BehaviorStates;
 using DedicatedServer.MessageCommands;
+using DedicatedServer.Pgsm;
 using DedicatedServer.Utils;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -55,6 +56,8 @@ namespace DedicatedServer.HostAutomatorStages
             }
 
             BehaviorChain.Disable();
+
+            PgsmLog.Disable();
 
             BuildCommandListener.Disable();
             DemolishCommandListener.Disable();
@@ -489,6 +492,8 @@ namespace DedicatedServer.HostAutomatorStages
             );
 
             BehaviorChain.Enable();
+
+            PgsmLog.Enable(helper, monitor, chatBox);
         }
 
         private void LogConfigError(string error)

@@ -4,7 +4,7 @@ Delta vs upstream (Chris82111/SMAPIDedicatedServerMod). One entry per change, ne
 
 ## Unreleased
 
-- (none yet — baseline = upstream as forked, verified building SMAPI 4.5.2 / SDV 1.6.15)
+- F2: Added `Pgsm/PgsmLog.cs` — structured `[PGSM]` log lines (READY, JOIN, LEAVE, CHAT, DAY, INVITECODE) via SMAPI monitor. Wired in `StartFarmStage`: `PgsmLog.Enable(...)` at end of `OnSaveLoaded`, `PgsmLog.Disable()` in `Dispose()`. Values quoted, backslash/quote/newline escaped. Invite code polled per tick until available (codes generate late); poll self-cancels if Steam networking absent (steamless copies).
 
 ## Verified environments
 
