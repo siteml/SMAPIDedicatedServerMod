@@ -58,6 +58,7 @@ namespace DedicatedServer.HostAutomatorStages
             BehaviorChain.Disable();
 
             PgsmLog.Disable();
+            PgsmShutdown.Disable();
 
             BuildCommandListener.Disable();
             DemolishCommandListener.Disable();
@@ -494,6 +495,7 @@ namespace DedicatedServer.HostAutomatorStages
             BehaviorChain.Enable();
 
             PgsmLog.Enable(helper, monitor, chatBox);
+            PgsmShutdown.Enable();
         }
 
         private void LogConfigError(string error)
