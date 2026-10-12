@@ -1,11 +1,34 @@
-﻿namespace DedicatedServer.Config
+﻿using System;
+
+namespace DedicatedServer.Config
 {
+    /// <summary>
+    ///         By default, the file is located at the following path in Windows:
+    /// <br/>   <c>"C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\DedicatedServer\"</c>
+    /// </summary>
     public class ModConfig
     {
+        /// <summary>
+        ///         Two letter language code, see: <see cref="StardewValley.LocalizedContentManager.LanguageCode"/>
+        /// <br/>   All values in the enumeration are valid and change the game's language.
+        /// <br/>   The mod's language only supports en, de, and fr.
+        /// </summary>
+        public string Language { get; set; } = null;
+
+        /// <summary>
+        /// Server Port, if this value is set to null, this mod will not change the port, so Stardew Valley's default port (24642) will be used.
+        /// </summary>
+        public UInt16? Port { get; set; } = null;
+
         public string FarmName { get; set; } = "Stardew";
 
         // Options are 0, 1, 2, or 3.
         public int StartingCabins { get; set; } = 1;
+
+        /// <summary>
+        /// Sets the maximum number of houses you can buy from Robin. The minimum and default value is 8.
+        /// </summary>
+        public int PlayerLimit { get; set; } = 8;
 
         // Options are "nearby" or "separate"
         public string CabinLayout { get; set; } = "separate";
@@ -16,8 +39,19 @@
         // Options are "shared" or "separate"
         public string MoneyStyle { get; set; } = "shared";
 
-        // Options are "standard", "riverland", "forest", "hilltop", "wilderness", "fourcorners", "beach".
+        /// <summary>
+        ///         Options are "standard", "riverland", "forest", "hilltop", "wilderness",
+        /// <br/>               "fourcorners", "beach", "meadowlands", or "mod"
+        /// </summary>
         public string FarmType { get; set; } = "standard";
+
+        /// <summary>
+        ///         The farm ID must be selected to match the mod map ID. The mod ID for all mod
+        /// <br/>   maps is displayed in the log. If you don't know it, let the game crash once and
+        /// <br/>   read the ID from the log. This option is only used when <see cref="FarmType"/>
+        /// <br/>   is set to "mod".
+        /// </summary>
+        public string ModFarmId { get; set; } = null;
 
         // Options are "normal" or "remixed".
         public string CommunityCenterBundles { get; set; } = "normal";

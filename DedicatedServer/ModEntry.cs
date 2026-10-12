@@ -1,12 +1,24 @@
 ﻿using DedicatedServer.Config;
 using DedicatedServer.HostAutomatorStages;
+using DedicatedServer.Network;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace DedicatedServer
 {
-    /// <summary>The mod entry point.</summary>
+    /// <summary>
+    ///         The mod entry point.
+    /// <br/>   
+    /// <br/>   All mods are in the following path in Windows:
+    /// <br/>   <c>"C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\"</c>
+    /// <br/>   
+    /// <br/>   By default, the config file is located at the following path in Windows:
+    /// <br/>   <c>"C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\DedicatedServer\"</c>
+    /// 
+    /// <br/>   By default, the save game files are located at the following path in Windows:
+    /// <br/>   <c>"%appdata%\StardewValley\Saves"</c>
+    /// </summary>
     public class ModEntry : Mod
     {
         // TODO: Make the host icon on the map invisible to everyone else
@@ -25,6 +37,11 @@ namespace DedicatedServer
         {
             this.helper = helper;
             this.config = helper.ReadConfig<ModConfig>();
+
+            Port.Patch(ModManifest.UniqueID, base.Monitor, this.config);
+
+            Network.Multiplayer.Init(base.Monitor);
+            Network.Multiplayer.SetPlayerLimit(this.config);
 
             this.waitCounter = 60;
             this.Enable();
