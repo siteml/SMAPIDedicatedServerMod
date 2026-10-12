@@ -13,7 +13,12 @@ namespace DedicatedServer.Network
         {
             public static void Prefix(ref int value)
             {
-                value = (int)ServerPort;
+                // Defensive: the patch is only installed when a port was
+                // configured, but never let a null here take the server down.
+                if (ServerPort.HasValue)
+                {
+                    value = ServerPort.Value;
+                }
             }
         }
 
@@ -31,6 +36,11 @@ namespace DedicatedServer.Network
             }
             monitor.Log($"The server's port has been changed to {config.Port}.", LogLevel.Info);
 
+            // PGSM fix: upstream 1.2.7 never copied the configured port into
+            // ServerPort, so the prefix dereferenced a null nullable and
+            // LidgrenServer.initialize() threw "Nullable object must have a
+            // value" whenever Port was set.
+            ServerPort = config.Port;
 
             var original = Type
                 .GetType("Lidgren.Network.NetPeerConfiguration, Lidgren.Network")
