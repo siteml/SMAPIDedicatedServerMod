@@ -19,7 +19,7 @@ namespace DedicatedServer
     {
         private static FieldInfo multiplayerFieldInfo = typeof(Game1).GetField("multiplayer", BindingFlags.NonPublic | BindingFlags.Static);
 
-        private static Multiplayer multiplayer = null;
+        private static Multiplayer multiplayer => (Multiplayer)multiplayerFieldInfo.GetValue(null);
 
         public static IModHelper helper { get; private set; }
         public static IMonitor monitor { get; private set; }
@@ -130,6 +130,40 @@ namespace DedicatedServer
 
         #region Game
 
+        public static void SetMonth(Season season)
+        {
+            switch (season)
+            {
+                case Season.Spring: Game1.currentSeason = "spring"; break;
+                case Season.Summer: Game1.currentSeason = "summer"; break;
+                case Season.Fall: Game1.currentSeason = "fall"; break;
+                case Season.Winter: Game1.currentSeason = "winter"; break;
+                default: break;
+            }
+        }
+
+        public static void SetMonth(int month)
+        {
+            switch (month)
+            {
+                case 1: Game1.currentSeason = "spring"; break;
+                case 2: Game1.currentSeason = "summer"; break;
+                case 3: Game1.currentSeason = "fall"; break;
+                case 4: Game1.currentSeason = "winter"; break;
+                default: break;
+            }
+        }
+
+        public static void SetDay(int day)
+        {
+            if (28 >= day && 1 <= day)
+            {
+                day = day - Game1.dayOfMonth;
+                Game1.stats.DaysPlayed += (uint)day;
+                Game1.dayOfMonth += day;
+            }
+        }
+
         /// <summary>
         ///         List of farmers of saved games
         /// </summary>
@@ -145,19 +179,43 @@ namespace DedicatedServer
 
         public static Farmer GetFarmerOfSaveGameOrDefault(string farmName, List<Farmer> saveGameFarmers)
         {
-            foreach (Farmer farmer in saveGameFarmers)
-            {
-                if (!farmer.slotCanHost)
-                {
-                    continue;
-                }
-                if (farmer.farmName.Value == farmName)
-                {
-                    return farmer;
-                }
-            }
+            var farmers = saveGameFarmers
+                .Where(farmer => farmer.farmName.ToString() == farmName)
+                .ToList();
 
-            return null;
+            switch (farmers.Count)
+            {
+                case 0:
+                    monitor.Log($"No farm found.", LogLevel.Info);
+                    return null;
+
+                case 1:
+                    var foundFarmer = farmers[0];
+
+                    monitor.Log($"One farm found (farm name, host farmer, directory name):", LogLevel.Info);
+                    monitor.Log($"  {foundFarmer.farmName}, {foundFarmer.Name}, {foundFarmer.slotName}", LogLevel.Info);
+
+                    if (false == foundFarmer.slotCanHost)
+                    {
+                        monitor.Log($"The farm you found actually exists, but no one can join it because " +
+                            $"it's not a multiplayer game and/or there are no huts.", LogLevel.Error);
+                        Exit(-1);
+                    }
+
+                    return foundFarmer;
+
+                default:
+                    monitor.Log($"Several farms with the same name were found. " +
+                        $"Please make sure there is only one farm with this name. " +
+                        $"The following farms were found (farm name, host farmer, directory name):", LogLevel.Error);
+
+                    foreach (Farmer farmer in farmers)
+                    {
+                        monitor.Log($"  {farmer.farmName}, {farmer.Name}, {farmer.slotName}", LogLevel.Info);
+                    }
+                    Exit(-1);
+                    throw new Exception("Error while Exit() is called.");
+            }
         }
 
         public static Farmer GetFarmerOfSaveGameOrDefault(string farmName)
@@ -172,17 +230,95 @@ namespace DedicatedServer
         #region Players
 
         /// <summary>
-        /// Get number of all players who are currently connected
+        ///         Get number of all players who are currently connected, without the host
+        /// <br/>   
+        /// <br/>   The following does not update in an event:
+        /// <code>
+        ///   Game1.otherFarmers;
+        ///   Game1.getOnlineFarmers();
+        /// </code>
         /// </summary>
-        public static int NumberOfPlayers { get => Game1.getOnlineFarmers().Count - 1; }
+        public static int NumberOfPlayers
+        {
+            get
+            {
+                int number = 0;
+                foreach (var farmer in Game1.getOnlineFarmers())
+                {
+                    if (false == multiplayer.isDisconnecting(farmer))
+                    {
+                        number++;
+                    }
+                }
+                return number -1;
+            }
+        }
 
+        /// <summary>
+        ///         Get number of all players who are currently connected, without the host
+        /// <br/>   
+        /// <br/>   Attention: This property does not update in an event.
+        /// </summary>
+        public static int NumberOfPlayersNoneEventUpdate
+        {
+            get => Game1.getOnlineFarmers().Count - 1;
+        }
+        
+        /// <summary>
+        ///         Get a List of online farmers, without the host
+        /// <br/>   
+        /// <br/>   The following does not update in an event:
+        /// <code>
+        ///   Game1.otherFarmers;
+        ///   Game1.getOnlineFarmers();
+        /// </code>
+        /// </summary>
+        /// <returns>List of online farmers</returns>
+        public static List<Farmer> GetOnlineFarmers()
+        {
+            var onlineFarmers = new List<Farmer>();
+            foreach (var farmer in Game1.getOnlineFarmers())
+            {
+                if (Game1.player.UniqueMultiplayerID == farmer.UniqueMultiplayerID) { continue; }
+
+                if (false == multiplayer.isDisconnecting(farmer))
+                {
+                    onlineFarmers.Add(farmer);
+                }
+            }
+            return onlineFarmers;
+        }
+
+        /// <summary>
+        ///         Get a List of online farmers, without the host
+        /// <br/>   
+        /// <br/>   Attention: This function does not update in an event.
+        /// </summary>
+        /// <returns>List of online farmers</returns>
+        public static List<Farmer> GetOnlineFarmersNoneEventUpdate()
+        {
+            var onlineFarmers = new List<Farmer>();
+            foreach (var farmer in Game1.getOnlineFarmers())
+            {
+                if (Game1.player.UniqueMultiplayerID == farmer.UniqueMultiplayerID) { continue; }
+
+                onlineFarmers.Add(farmer);
+            }
+            return onlineFarmers;
+        }
+
+        /// <summary>
+        ///         Get a Dictionary of online farmers, without the host
+        /// <br/>   
+        /// <br/>   The following does not update in an event:
+        /// <code>
+        ///   Game1.otherFarmers;
+        ///   Game1.getOnlineFarmers();
+        /// </code>
+        /// </summary>
+        /// <returns>Dictionary of online farmers</returns>
         public static Dictionary<long, Farmer> OnlineFarmers()
         {
-            if (multiplayer == null)
-            {
-                multiplayer = (Multiplayer)multiplayerFieldInfo.GetValue(null);
-            }
-
             var otherPlayers = new Dictionary<long, Farmer>();
             
             foreach (var farmer in Game1.otherFarmers.Values)

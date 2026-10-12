@@ -282,6 +282,16 @@ namespace DedicatedServer.MessageCommands
                     #region DEBUG_COMMANDS
                     #if USE_DEBUG
 
+                    case "t9":
+                        Game1.timeOfDay = 900;
+                        break;
+                    case "t18":
+                        Game1.timeOfDay = 1800;
+                        break;
+                    case "t22":
+                        Game1.timeOfDay = 2200;
+                        break;
+
                     case "timereset":
                         if (Game1.dayOfMonth > 1)
                         {
@@ -290,14 +300,14 @@ namespace DedicatedServer.MessageCommands
                         }
                         break;
 
+                    case "settomonth":
+                        int month = int.TryParse(param, out int resultMonth) ? resultMonth : 0;
+                        MainController.SetMonth(month);
+                        break;
+
                     case "settoday":
-                        int days = int.TryParse(param, out int result) ? result : 0;
-                        if (days > Game1.dayOfMonth)
-                        {
-                            days = days - Game1.dayOfMonth;
-                            Game1.stats.DaysPlayed += (uint)days;
-                            Game1.dayOfMonth += days;
-                        }
+                        int day = int.TryParse(param, out int resultDay) ? resultDay : 0;
+                        MainController.SetDay(day);
                         break;
 
                     case "seed":
@@ -353,6 +363,10 @@ namespace DedicatedServer.MessageCommands
                         Game1.player.addItemToInventory(new StardewValley.Object(StardewValley.Object.iridiumID, 999));
                         break;
 
+                    case "playerlimit":
+                        int players = int.TryParse(param, out int resultPlayers) ? resultPlayers : 0;
+                        Network.Multiplayer.SetPlayerLimit(players);
+                        break;
 
                     case "com11":
                         Game1.player.addItemToInventory(new StardewValley.Object(wildHorseRadish, 1));
@@ -517,6 +531,27 @@ namespace DedicatedServer.MessageCommands
                         break;
 
 
+                    case "rescopperbars":
+                        Game1.player.addItemToInventory(new StardewValley.Object(StardewValley.Object.copperBarQID, 5));
+                        break;
+
+                    case "tool0":
+                        ServerHost.UpdateAllTools(0);
+                        return;
+                    case "tool1":
+                        ServerHost.UpdateAllTools(1);
+                        return;
+                    case "tool2":
+                        ServerHost.UpdateAllTools(2);
+                        return;
+                    case "tool3":
+                        ServerHost.UpdateAllTools(3);
+                        return;
+                    case "tool4":
+                        ServerHost.UpdateAllTools(4);
+                        break;
+
+
                     case "wood":
                         Game1.player.addItemToInventory(new StardewValley.Object(StardewValley.Object.woodID, 999));
                         break;
@@ -551,11 +586,11 @@ namespace DedicatedServer.MessageCommands
                         break;
 
                     case "farm":
-                        MainController.Warp(WarpPoints.FarmWarp);
+                        MainController.Warp(WarpPoints.farmWarp);
                         break;
 
                     case "house":
-                        MainController.Warp(WarpPoints.FarmHouseWarp);
+                        MainController.Warp(WarpPoints.farmHouseWarp);
                         break;
 
                     case "mine":
@@ -589,6 +624,10 @@ namespace DedicatedServer.MessageCommands
                     case "wizzard":
                         MainController.Warp(WarpPoints.wizzardWarp);
                         break;
+
+                    case "desert":
+                        MainController.Warp(WarpPoints.desertWarp);
+                        break;                
 
                     case "location":
                         var location = Game1.player.Tile;
@@ -677,7 +716,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.LetMePlay))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -689,7 +727,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.TakeOver))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -701,7 +738,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.UpgradeHouseLevelBasedOnFarmhand))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -727,7 +763,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.SafeInviteCode))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -746,7 +781,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.InviteCode))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
             
@@ -759,7 +793,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.ForceInviteCode))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -770,7 +803,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.Invisible))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -782,7 +814,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.Sleep))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -808,7 +839,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.ForceSleep))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
             
@@ -819,7 +849,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.ForceResetDay))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -830,7 +859,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.ForceShutdown))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -841,7 +869,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.Wallet))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -852,7 +879,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.Wallet))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -863,7 +889,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.SpawnMonster))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
@@ -883,7 +908,6 @@ namespace DedicatedServer.MessageCommands
         {
             if (false == PasswordValidation.IsAuthorized(farmer.UniqueMultiplayerID, p => p.MoveBuildPermission))
             {
-                WriteToPlayer(farmer, PasswordValidation.notAuthorizedMessage);
                 return;
             }
 
